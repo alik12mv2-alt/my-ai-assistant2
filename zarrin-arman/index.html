@@ -21,28 +21,33 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:#0b0
 <div class="card product" data-category="jewelry" data-name="پلاک مینیمال" data-price="8800000" data-symbol="✧" data-karat="۱۸ عیار" data-weight="۱.۵ گرم"><div class="product-photo">✧</div><h3>پلاک مینیمال</h3><div class="details">وزن نمونه ۱.۵ گرم</div><p>طرح ساده و کلاسیک</p><div class="price">۸,۸۰۰,۰۰۰ تومان</div><button data-add>افزودن به سبد</button><button data-details>جزئیات</button></div>
 <div class="card product" data-category="jewelry" data-name="گردنبند ظریف" data-price="12900000" data-symbol="◇" data-karat="۱۸ عیار" data-weight="۲ گرم"><div class="product-photo">◇</div><h3>گردنبند ظریف</h3><div class="details">وزن نمونه ۲ گرم</div><p>طرح روزمره</p><div class="price">۱۲,۹۰۰,۰۰۰ تومان</div><button data-add>افزودن به سبد</button><button data-details>جزئیات</button></div>
 </div></section>
-<section class="section" id="basket"><h2>سبد خرید نمایشی</h2><p class="sub">این سبد فقط در همین صفحه کار می‌کند و سفارش یا پرداخت واقعی ندارد.</p><div class="card" id="cart-items"><p class="sub">هنوز محصولی اضافه نشده است.</p></div><div class="card" style="margin-top:12px"><strong>جمع نمونه: <span class="price" id="cart-total">۰ تومان</span></strong> <button id="clear-cart">پاک کردن سبد</button></div></section>
+<section class="section" id="basket"><h2>سبد خرید نمایشی</h2><p class="sub">سبد در همین مرورگر ذخیره می‌شود تا با بستن صفحه از بین نرود؛ سفارش یا پرداخت واقعی انجام نمی‌شود.</p><div class="card" id="cart-items"><p class="sub">هنوز محصولی اضافه نشده است.</p></div><div class="card" style="margin-top:12px"><strong>جمع نمونه: <span class="price" id="cart-total">۰ تومان</span></strong> <button id="clear-cart">پاک کردن سبد</button></div></section>
 <section class="section" id="calculator"><h2>محاسبه‌گر طلا</h2><p class="sub">محاسبه ارزش خام با نرخ‌های ثابت نمونه.</p><div class="calculator"><div class="calcbox"><label for="weight">وزن (گرم)</label><input id="weight" type="number" min="0" step="0.01" value="1"><label for="karat">عیار</label><select id="karat"><option value="18">۱۸ عیار</option><option value="24">۲۴ عیار</option></select><div class="result" id="result">۳,۵۰۰,۰۰۰ تومان</div><p class="note">بدون اجرت، مالیات، سود فروشنده یا هزینه‌های دیگر.</p></div><div><h3>روش محاسبه</h3><p class="sub">وزن واردشده در نرخ نمونه هر گرم ضرب می‌شود. هیچ معامله‌ای در این صفحه انجام نمی‌شود.</p></div></div></section>
 <div class="modal-backdrop" id="product-modal" role="dialog" aria-modal="true"><div class="modal"><button id="modal-close">بستن ×</button><div class="modal-symbol" id="modal-symbol"></div><h3 id="modal-title"></h3><p id="modal-meta"></p><p id="modal-description">اطلاعات و قیمت‌ها صرفاً نمونه هستند.</p><div class="price" id="modal-price"></div></div></div>
-</main><footer class="wrap footer"><span>© زرین آرمان — نسخه اولیه</span><span>قیمت‌ها نمایشی‌اند؛ خرید و فروش واقعی فعال نیست.</span></footer>
+</main><footer class="wrap footer"><span>© زرین آرمان — نسخه نمایشی</span><span>قیمت‌ها نمایشی‌اند؛ خرید و فروش واقعی فعال نیست.</span></footer>
 <script>
 'use strict';
 const fmt=new Intl.NumberFormat('fa-IR');
-const cart=new Map();
+const CART_KEY='za_demo_cart_v2';
+function readCart(){try{const raw=localStorage.getItem(CART_KEY);return new Map(raw?JSON.parse(raw):[]);}catch{return new Map();}}
+const cart=readCart();
 const cartItems=document.getElementById('cart-items');
 const cartTotal=document.getElementById('cart-total');
 const cartCount=document.getElementById('cart-count');
+function saveCart(){try{localStorage.setItem(CART_KEY,JSON.stringify([...cart]));}catch{}}
 function renderCart(){
- if(!cart.size){cartItems.innerHTML='<p class="sub">هنوز محصولی اضافه نشده است.</p>';cartTotal.textContent='۰ تومان';cartCount.textContent='۰';return;}
+ if(!cart.size){cartItems.innerHTML='<p class="sub">هنوز محصولی اضافه نشده است.</p>';cartTotal.textContent='۰ تومان';cartCount.textContent='۰';saveCart();return;}
  let sum=0,count=0;cartItems.innerHTML='';
- cart.forEach((v,n)=>{sum+=v.price*v.qty;count+=v.qty;const row=document.createElement('div');row.className='cartline';const label=document.createElement('span');label.textContent=n+' × '+fmt.format(v.qty)+' — '+fmt.format(v.price)+' تومان';const del=document.createElement('button');del.textContent='حذف';del.onclick=()=>{cart.delete(n);renderCart();};row.append(label,del);cartItems.appendChild(row);});
- cartTotal.textContent=fmt.format(sum)+' تومان';cartCount.textContent=fmt.format(count);
+ cart.forEach((v,n)=>{sum+=v.price*v.qty;count+=v.qty;const row=document.createElement('div');row.className='cartline';const label=document.createElement('span');label.textContent=n+' × '+fmt.format(v.qty)+' — '+fmt.format(v.price)+' تومان';const actions=document.createElement('span');const minus=document.createElement('button');minus.textContent='−';minus.setAttribute('aria-label','کم کردن تعداد');minus.onclick=()=>{v.qty--;if(v.qty<=0)cart.delete(n);renderCart();};const plus=document.createElement('button');plus.textContent='+';plus.setAttribute('aria-label','افزایش تعداد');plus.onclick=()=>{v.qty++;renderCart();};const del=document.createElement('button');del.textContent='حذف';del.onclick=()=>{cart.delete(n);renderCart();};actions.append(minus,plus,del);row.append(label,actions);cartItems.appendChild(row);});
+ cartTotal.textContent=fmt.format(sum)+' تومان';cartCount.textContent=fmt.format(count);saveCart();
 }
 document.querySelectorAll('.product').forEach(card=>{
  card.querySelector('[data-add]').addEventListener('click',()=>{const name=card.dataset.name;const item=cart.get(name)||{price:Number(card.dataset.price),qty:0};item.qty++;cart.set(name,item);renderCart();});
  card.querySelector('[data-details]').addEventListener('click',()=>{document.getElementById('modal-title').textContent=card.dataset.name;document.getElementById('modal-symbol').textContent=card.dataset.symbol;document.getElementById('modal-meta').textContent=card.dataset.karat+' • '+card.dataset.weight;document.getElementById('modal-price').textContent=fmt.format(Number(card.dataset.price))+' تومان';document.getElementById('product-modal').classList.add('open');});
 });
 document.getElementById('clear-cart').onclick=()=>{cart.clear();renderCart();};
+window.addEventListener('storage',e=>{if(e.key===CART_KEY){const next=readCart();cart.clear();next.forEach((v,k)=>cart.set(k,v));renderCart();}});
+renderCart();
 const modal=document.getElementById('product-modal');document.getElementById('modal-close').onclick=()=>modal.classList.remove('open');modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});document.addEventListener('keydown',e=>{if(e.key==='Escape')modal.classList.remove('open');});
 let selectedCategory='all';
 function applyFilters(){const term=document.getElementById('product-search').value.trim().toLocaleLowerCase();document.querySelectorAll('.product').forEach(p=>{p.hidden=!((selectedCategory==='all'||p.dataset.category===selectedCategory)&&p.dataset.name.toLocaleLowerCase().includes(term));});}
