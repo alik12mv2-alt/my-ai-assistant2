@@ -3,6 +3,8 @@ import os
 import urllib.request
 import urllib.error
 
+MAX_HISTORY_MESSAGES = 20
+
 
 def load_env(path='.env'):
     if not os.path.exists(path):
@@ -21,12 +23,21 @@ def ask_api(messages):
     base_url = os.getenv('API_BASE_URL', 'https://api.openai.com/v1').rstrip('/')
     model = os.getenv('MODEL', 'gpt-4o-mini')
     if not api_key or api_key == 'put_your_api_key_here':
-        print('لطفاً API_KEY را در فایل .env تنظیم کنید.')
+        print('تنظیم API_KEY در فایل .env ضروری است.')
         return None
-    payload = json.dumps({'model': model, 'messages': messages}).encode('utf-8')
+
+    payload = json.dumps({
+        'model': model,
+        'messages': messages,
+        'temperature': 0.7
+    }).encode('utf-8')
     req = urllib.request.Request(
-        f'{base_url}/chat/completions', data=payload,
-        headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
+        f'{base_url}/chat/completions',
+        data=payload,
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        },
         method='POST'
     )
     try:
@@ -36,36 +47,60 @@ def ask_api(messages):
     except urllib.error.HTTPError as e:
         print(f'خطای API: HTTP {e.code}')
     except urllib.error.URLError:
-        print('ارتباط با API برقرار نشد؛ اتصال اینترنت و آدرس API را بررسی کنید.')
+        print('اتصال به API ناموفق بود. اینترنت یا API_BASE_URL را بررسی کنید.')
     except (KeyError, ValueError, TimeoutError):
-        print('پاسخ API قابل پردازش نبود.')
+        print('پاسخ سرویس قابل پردازش نبود.')
     return None
+
+
+def show_help():
+    print('''\nفرمان‌های دستیار:
+  help   نمایش راهنما
+  reset  پاک کردن تاریخچه همین جلسه
+  exit   خروج از برنامه
+''')
 
 
 def main():
     load_env()
-    print('دستیار هوش مصنوعی آماده است. برای خروج exit و برای پاک کردن گفتگو reset را وارد کنید.')
-    messages = [{'role': 'system', 'content': 'You are a helpful, clear assistant. Reply in Persian unless the user uses another language.'}]
+    print('دستیار فارسی آماده است. برای راهنما help را وارد کنید.')
+    system_message = {
+        'role': 'system',
+        'content': (
+            'You are a helpful, clear assistant. Reply in Persian unless the user '
+            'uses another language. Explain uncertainty and do not invent facts.'
+        )
+    }
+    messages = [system_message]
+
     while True:
         try:
             user_text = input('\nشما: ').strip()
         except (KeyboardInterrupt, EOFError):
             print('\nخدانگهدار!')
             break
+
         if not user_text:
             continue
-        if user_text.lower() in ('exit', 'quit'):
+        command = user_text.lower()
+        if command in ('exit', 'quit'):
             print('خدانگهدار!')
             break
-        if user_text.lower() == 'reset':
-            messages = messages[:1]
-            print('تاریخچه پاک شد.')
+        if command == 'help':
+            show_help()
             continue
+        if command == 'reset':
+            messages = [system_message]
+            print('تاریخچه این جلسه پاک شد.')
+            continue
+
         messages.append({'role': 'user', 'content': user_text})
         reply = ask_api(messages)
         if reply:
             print(f'\nدستیار: {reply}')
             messages.append({'role': 'assistant', 'content': reply})
+            # Keep recent context to limit token usage.
+            messages = [system_message] + messages[-MAX_HISTORY_MESSAGES:]
         else:
             messages.pop()
 
