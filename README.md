@@ -10,7 +10,7 @@
 ```bash
 pkg update
 pkg install python git
-git clone https://github.com/alik12mv2-alt/my-ai-assistant2.git
+ git clone https://github.com/alik12mv2-alt/my-ai-assistant2.git
 cd my-ai-assistant2
 cp .env.example .env
 nano .env
@@ -19,9 +19,10 @@ python main.py
 
 در فایل `.env` مقدار `API_KEY` را وارد کنید. کلید را در GitHub یا گفتگوها منتشر نکنید.
 
-## فرمان‌های
-- `help`: راهنما
-- `reset`: پاک کردن تاریخچهٔ گفت‌وگوی همین اجرا
-- `exit`: خروج
+## ذخیرهٔ تاریخچه
+به‌صورت پیش‌فرض ذخیرهٔ تاریخچه خاموش است. برای فعال‌کردن ذخیرهٔ محلی گفتگوها، در `.env` مقدار `SAVE_HISTORY=true` قرار دهید. این کار یک فایل `chat_history.json` روی دستگاه ایجاد می‌کند؛ فایل را با دیگران به اشتراک نگذارید. برای حذف گفتگو از فرمان `reset` استفاده کنید.
 
-تاریخچه فقط در حافظهٔ موقت برنامه نگهداری می‌شود و به فایل ذخیره نمی‌شود. اطلاعات حساس وارد نکنید.
+## فرمان‌ها
+- `help`: راهنما
+- `reset`: پاک کردن تاریخچهٔ گفت‌وگو
+- `exit`: خروج
