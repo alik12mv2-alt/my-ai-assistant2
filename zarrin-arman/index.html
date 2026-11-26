@@ -28,6 +28,29 @@ header{border-bottom:1px solid var(--line);position:sticky;top:0;background:#0b0
 <script>
 'use strict';
 const fmt=new Intl.NumberFormat('fa-IR');
+function syncAdminCatalog(){
+ try{
+  const saved=localStorage.getItem('za_demo_catalog');if(!saved)return;
+  const items=JSON.parse(saved);if(!Array.isArray(items))return;
+  const root=document.getElementById('product-list');root.replaceChildren();
+  items.forEach(item=>{
+   if(!item||typeof item.name!=='string'||!Number.isFinite(Number(item.price))||Number(item.price)<=0)return;
+   const name=item.name.trim();if(!name)return;
+   const category=/شمش|سکه/.test(name)?'bar':'jewelry';
+   const card=document.createElement('article');card.className='card product';
+   Object.assign(card.dataset,{category,name,price:String(Math.round(Number(item.price))),symbol:category==='bar'?'◈':'✧',karat:'اطلاعات نمونه',weight:'وزن اعلام نشده'});
+   const photo=document.createElement('div');photo.className='product-photo';photo.textContent=card.dataset.symbol;
+   const title=document.createElement('h3');title.textContent=name;
+   const details=document.createElement('div');details.className='details';details.textContent='محصول ثبت‌شده در پنل نمایشی';
+   const description=document.createElement('p');description.textContent='مشخصات و قیمت صرفاً نمونه هستند.';
+   const price=document.createElement('div');price.className='price';price.textContent=fmt.format(Number(item.price))+' تومان';
+   const add=document.createElement('button');add.type='button';add.dataset.add='';add.textContent='افزودن به سبد';
+   const more=document.createElement('button');more.type='button';more.dataset.details='';more.textContent='جزئیات';
+   card.append(photo,title,details,description,price,add,more);root.appendChild(card);
+  });
+ }catch{}
+}
+syncAdminCatalog();
 const CART_KEY='za_demo_cart_v2';
 function readCart(){try{const raw=localStorage.getItem(CART_KEY);return new Map(raw?JSON.parse(raw):[]);}catch{return new Map();}}
 const cart=readCart();
