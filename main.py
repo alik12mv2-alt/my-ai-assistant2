@@ -4,6 +4,7 @@ import urllib.request
 import urllib.error
 
 MAX_HISTORY_MESSAGES = 20
+HISTORY_FILE = 'chat_history.json'
 
 
 def load_env(path='.env'):
@@ -16,6 +17,34 @@ def load_env(path='.env'):
                 continue
             key, value = line.split('=', 1)
             os.environ.setdefault(key.strip(), value.strip())
+
+
+def history_enabled():
+    return os.getenv('SAVE_HISTORY', 'false').strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def load_history(system_message):
+    if not history_enabled() or not os.path.exists(HISTORY_FILE):
+        return [system_message]
+    try:
+        with open(HISTORY_FILE, encoding='utf-8') as f:
+            saved = json.load(f)
+        if isinstance(saved, list):
+            valid = [m for m in saved if isinstance(m, dict) and m.get('role') in ('user', 'assistant') and isinstance(m.get('content'), str)]
+            return [system_message] + valid[-MAX_HISTORY_MESSAGES:]
+    except (OSError, ValueError):
+        print('فایل تاریخچه خوانده نشد؛ گفتگوی تازه آغاز می‌شود.')
+    return [system_message]
+
+
+def save_history(messages):
+    if not history_enabled():
+        return
+    try:
+        with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump(messages[-MAX_HISTORY_MESSAGES:], f, ensure_ascii=False, indent=2)
+    except OSError:
+        print('ذخیره تاریخچه انجام نشد.')
 
 
 def ask_api(messages):
@@ -56,7 +85,7 @@ def ask_api(messages):
 def show_help():
     print('''\nفرمان‌های دستیار:
   help   نمایش راهنما
-  reset  پاک کردن تاریخچه همین جلسه
+  reset  پاک کردن تاریخچه گفتگو
   exit   خروج از برنامه
 ''')
 
@@ -64,6 +93,11 @@ def show_help():
 def main():
     load_env()
     print('دستیار فارسی آماده است. برای راهنما help را وارد کنید.')
+    if history_enabled():
+        print('ذخیره تاریخچه فعال است؛ گفتگوها روی دستگاه ذخیره می‌شوند.')
+    else:
+        print('ذخیره تاریخچه خاموش است؛ گفتگو پس از خروج نگهداری نمی‌شود.')
+
     system_message = {
         'role': 'system',
         'content': (
@@ -71,7 +105,7 @@ def main():
             'uses another language. Explain uncertainty and do not invent facts.'
         )
     }
-    messages = [system_message]
+    messages = load_history(system_message)
 
     while True:
         try:
@@ -91,7 +125,13 @@ def main():
             continue
         if command == 'reset':
             messages = [system_message]
-            print('تاریخچه این جلسه پاک شد.')
+            if history_enabled():
+                try:
+                    if os.path.exists(HISTORY_FILE):
+                        os.remove(HISTORY_FILE)
+                except OSError:
+                    print('حذف فایل تاریخچه ناموفق بود.')
+            print('تاریخچه گفتگو پاک شد.')
             continue
 
         messages.append({'role': 'user', 'content': user_text})
@@ -99,8 +139,8 @@ def main():
         if reply:
             print(f'\nدستیار: {reply}')
             messages.append({'role': 'assistant', 'content': reply})
-            # Keep recent context to limit token usage.
             messages = [system_message] + messages[-MAX_HISTORY_MESSAGES:]
+            save_history(messages[1:])
         else:
             messages.pop()
 
