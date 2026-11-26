@@ -13,7 +13,7 @@
 <main class="wrap">
 <section class="panel" id="setup">
 <h1>راه‌اندازی پنل مدیریت</h1>
-<p class="muted">راه‌اندازی یک‌باره: فایل supabase/schema.sql را در SQL Editor پروژه Supabase اجرا کنید؛ سپس در Authentication یک حساب مدیر بسازید و شناسه UUID همان کاربر را در جدول admin_users ثبت کنید. بعد Project URL و کلید عمومی anon یا publishable را در این فرم وارد کنید. این تنظیمات فقط در همین مرورگر ذخیره می‌شوند. هرگز service_role یا کلید محرمانه را وارد نکنید.</p>
+<p class="muted">راه‌اندازی: ابتدا schema.sql را در SQL Editor پروژه Supabase اجرا کنید و یک حساب مدیر بسازید؛ UUID آن را در جدول admin_users ثبت کنید. فرم زیر تنظیمات را فقط در همین مرورگر ذخیره می‌کند و برای بازدیدکنندگان سایت کافی نیست. برای اتصال کاتالوگ عمومی، فایل supabase-public-config.js را با Project URL و کلید عمومی anon/publishable پر کنید تا همه بازدیدکنندگان محصولات را ببینند. کلید service_role یا کلید محرمانه را هرگز در سایت قرار ندهید.</p>
 <div class="grid"><div><label for="projectUrl">Project URL</label><input id="projectUrl" type="url" placeholder="https://xxxx.supabase.co"></div><div><label for="publicKey">کلید عمومی anon / publishable</label><input id="publicKey" type="password" autocomplete="off" placeholder="کلید عمومی پروژه"></div></div>
 <div class="actions"><button id="saveConfigBtn">ذخیره و اتصال</button></div>
 <p class="muted">پس از اتصال، با حساب مدیر وارد شوید. شناسه کاربری مدیر باید از قبل در جدول admin_users ثبت شده باشد.</p>
@@ -21,7 +21,7 @@
 <section class="panel" id="loginPanel">
 <h2>ورود مدیر</h2>
 <div class="grid"><div><label for="email">ایمیل</label><input id="email" type="email" autocomplete="username"></div><div><label for="password">گذرواژه</label><input id="password" type="password" autocomplete="current-password"></div></div>
-<div class="actions"><button id="loginBtn">ورود</button></div><div id="loginStatus" class="status">ابتدا تنظیمات اتصال Supabase را در کد فایل وارد کنید.</div>
+<div class="actions"><button id="loginBtn">ورود</button></div><div id="loginStatus" class="status">ابتدا تنظیمات Supabase را ذخیره کنید.</div>
 </section>
 <section class="panel hidden" id="appPanel">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1>مدیریت محصولات</h1><button class="secondary" id="logoutBtn">خروج</button></div>
