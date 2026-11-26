@@ -7,14 +7,18 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pin runner image to reduce toolchain changes affecting python-for-android.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip             python3-venv build-essential libffi-dev libssl-dev             autoconf automake libtool libtool-bin pkg-config zlib1g-dev
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip \
+            python3-venv build-essential libffi-dev libssl-dev \
+            autoconf automake m4 libtool libtool-bin pkg-config \
+            zlib1g-dev gettext autoconf-archive
       - name: Install Buildozer
         run: |
           python3 -m pip install --user --break-system-packages buildozer cython==0.29.37
