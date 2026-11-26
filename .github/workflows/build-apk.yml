@@ -1,0 +1,30 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip             python3-venv build-essential libffi-dev libssl-dev             autoconf automake libtool pkg-config zlib1g-dev
+      - name: Install Buildozer
+        run: |
+          python3 -m pip install --user --break-system-packages buildozer cython==0.29.37
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Build debug APK
+        run: buildozer -v android debug
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AI-Assistant-APK
+          path: bin/*.apk
+          if-no-files-found: error
+          retention-days: 14
