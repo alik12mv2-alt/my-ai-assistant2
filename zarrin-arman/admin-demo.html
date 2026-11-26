@@ -17,7 +17,7 @@
 const defaults=[{name:"شمش یک گرمی",price:6200000},{name:"پلاک مینیمال",price:8800000},{name:"گردنبند ظریف",price:12900000}];
 const fmt=new Intl.NumberFormat('fa-IR');
 let products=load();
-function load(){try{const saved=localStorage.getItem('za_demo_catalog');return saved?JSON.parse(saved):defaults.map(x=>({...x}));}catch{return defaults.map(x=>({...x}));}}
+function load(){try{const saved=localStorage.getItem('za_demo_catalog');if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))return parsed;}localStorage.setItem('za_demo_catalog',JSON.stringify(defaults));return defaults.map(x=>({...x}));}catch{return defaults.map(x=>({...x}));}}
 function save(){localStorage.setItem('za_demo_catalog',JSON.stringify(products));render();}
 function render(){const root=document.getElementById('list');root.innerHTML='';if(!products.length){root.innerHTML='<p class="empty">محصولی ثبت نشده است.</p>';return;}products.forEach((p,i)=>{const div=document.createElement('div');div.className='item';const info=document.createElement('span');info.textContent=p.name+' — '+fmt.format(p.price)+' تومان';const del=document.createElement('button');del.textContent='حذف';del.onclick=()=>{products.splice(i,1);save();};div.append(info,del);root.appendChild(div);});}
 document.getElementById('add').onclick=()=>{const name=document.getElementById('name').value.trim(),price=Number(document.getElementById('price').value);if(!name||!Number.isFinite(price)||price<=0){alert('نام محصول و قیمت معتبر وارد کنید.');return;}products.push({name,price:Math.round(price)});save();document.getElementById('name').value='';document.getElementById('price').value='';};
