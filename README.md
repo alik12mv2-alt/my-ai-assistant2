@@ -26,3 +26,15 @@ python main.py
 - `help`: راهنما
 - `reset`: پاک کردن تاریخچهٔ گفت‌وگو
 - `exit`: خروج
+
+
+---
+
+## پروژه زرین آرمان (نسخه نمایشی)
+
+- [باز کردن سایت](https://alik12mv2-alt.github.io/zarrin-arman2/)
+- [پنل مدیریت کاتالوگ](https://alik12mv2-alt.github.io/zarrin-arman2/admin.html)
+- [پوشه سورس سایت](./zarrin-arman/)
+- [راهنمای راه‌اندازی](./zarrin-arman/README-SETUP.md)
+
+> سایت فعلاً صرفاً نمایش نمونه است؛ قیمت‌ها نمونه‌اند و پرداخت/سفارش واقعی فعال نیست.
