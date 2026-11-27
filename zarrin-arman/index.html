@@ -24,8 +24,7 @@
 @media(max-width:760px){.container{width:calc(100% - 24px)}.desktop-nav{display:none}.head-inner{height:59px}.brand{font-size:18px}.hero{grid-template-columns:1fr;min-height:0}.hero-copy{padding:25px 22px 12px}.hero h1{font-size:29px;margin:5px 0}.hero p{font-size:11px;margin-bottom:12px}.hero-photo{min-height:190px;background-position:center 42%}.hero-dots{bottom:10px}.trust-strip{gap:12px;padding:10px 0 15px;font-size:9px}.category-strip{grid-template-columns:repeat(6,minmax(78px,1fr));overflow-x:auto}.category-tile{font-size:9px}.section{padding:13px;margin:14px auto 18px;border-radius:17px}.section-head h2{font-size:15px}.products,.catalog .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.product{padding:7px;border-radius:13px}.product-photo{height:125px}.product h3{font-size:11px}.price{font-size:10px}.add-btn{font-size:9px;padding:5px 7px}.mothers{grid-template-columns:1fr}.mothers-copy{padding:17px 20px 4px}.mothers-copy h2{font-size:20px}.mothers-photo{min-height:150px}.info-grid{grid-template-columns:1fr 1fr 1fr;gap:7px}.info{padding:10px 4px}.info b{font-size:11px}.info span{font-size:9px}.footer{padding-bottom:95px}.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:25;background:#fffdf9;border-top:1px solid var(--line);justify-content:space-around;padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #3c30100c}.bottom-nav a,.bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:0;color:#817763;font-size:9px}.bottom-nav b{font-size:18px;font-weight:normal}.bottom-nav .selected{color:#987536}.cart-shortcut{font-size:10px;padding:7px 10px}}
 @media(max-width:370px){.product-photo{height:105px}.price-line{align-items:flex-start;flex-direction:column}.add-btn{width:100%}.hero-photo{min-height:155px}}
 </style>
-<script src="./supabase-public-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 <body>
 <div class="topline">✦ نمایشگاه نمونه زرین آرمان — قیمت‌ها و محصولات نمایشی؛ بدون خرید یا پرداخت آنلاین ✦</div>
@@ -68,19 +67,16 @@ $('search').addEventListener('input',renderProducts);document.querySelectorAll('
 document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',()=>{filter=a.dataset.jump;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter===filter));renderProducts()}));
 $('search-focus').onclick=()=>{$('search').focus();$('catalog').scrollIntoView({behavior:'smooth'})};$('open-cart').onclick=openCart;$('bottom-cart').onclick=openCart;$('close-cart').onclick=closeCart;$('cart-drawer').addEventListener('click',e=>{if(e.target===$('cart-drawer'))closeCart()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});
 renderProducts();renderCart();
-async function syncProductsFromSupabase(){
+async function loadCatalogFromGitHub(){
  try{
-  const cfg=window.ZARRIN_SUPABASE_CONFIG||{};
-  const url=cfg.url||localStorage.getItem("zarrin_supabase_url")||"";
-  const key=cfg.publicKey||localStorage.getItem("zarrin_supabase_public_key")||"";
-  if(!url.startsWith("https://")||!key||key.includes("service_role")||!window.supabase)return;
-  const client=window.supabase.createClient(url,key);
-  const {data,error}=await client.from("products").select("id,name,category,price,weight,karat,image_url,featured,active").eq("active",true).order("created_at",{ascending:false});
-  if(error||!Array.isArray(data)||data.length===0)return;
-  products.splice(0,products.length,...data.map(p=>({id:p.id,name:p.name,category:p.category,price:Number(p.price||0),weight:String(p.weight||0)+" گرم",karat:p.karat||"۱۸ عیار",symbol:"♢",image:p.image_url||"",featured:!!p.featured})));
+  const response=await fetch("./products.json",{cache:"no-cache"});
+  if(!response.ok)throw new Error("catalog fetch failed");
+  const data=await response.json();
+  if(!Array.isArray(data)||data.length===0)return;
+  products.splice(0,products.length,...data.map(p=>({...p,price:Number(p.price||0)})));
   cart.clear();renderProducts();renderCart();
- }catch(_){/* Keep the demo catalog if Supabase is not configured or unavailable. */}
+ }catch(_){/* Keep the embedded demo catalog if the JSON file is unavailable. */}
 }
-syncProductsFromSupabase();
+loadCatalogFromGitHub();
 </script>
 </body></html>
