@@ -2,14 +2,14 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>پنل مدیریت زرین آرمان (نسخه محلی)</title>
+<title>پنل مدیریت زرین آرمان | کاتالوگ GitHub</title>
 <style>
 :root{--gold:#b58a35;--ink:#302719;--paper:#fbf8f1;--line:#e8dfce}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Tahoma,Arial,sans-serif}header{background:#292318;color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}header b{color:#e8c879;font-size:19px}header a{color:#f4dfaa}.wrap{max-width:1000px;margin:24px auto;padding:0 15px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;margin-bottom:16px;box-shadow:0 5px 22px #38290b0a}h1,h2{margin:0 0 12px}h1{font-size:21px}h2{font-size:17px}.note{background:#fff7df;padding:12px;border-radius:10px;font-size:13px;line-height:1.9;margin-bottom:15px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}label{display:block;font-size:13px;margin-bottom:5px}input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:75px}button{border:0;border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer;background:var(--gold);color:#fff}button.secondary{background:#eee8dc;color:var(--ink)}button.danger{background:#a94438}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.products{display:grid;gap:10px}.product{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);padding:12px;border-radius:12px}.product img{width:76px;height:76px;object-fit:cover;border-radius:10px}.product small{display:block;color:#786f60;margin-top:4px}.badge{font-size:11px;background:#f2ead8;padding:4px 8px;border-radius:20px}@media(max-width:600px){.grid{grid-template-columns:1fr}.product{align-items:flex-start;flex-direction:column}}
 </style></head>
 <body>
 <header><b>زرین آرمان | مدیریت کاتالوگ</b><a href="./index.html">بازگشت به سایت</a></header>
 <main class="wrap">
-<section class="panel"><div class="note"><strong>نسخه محلی و آزمایشی:</strong> محصولات در همین مرورگر ذخیره می‌شوند؛ با دستگاه دیگر همگام نیستند و این پنل به فروش یا پرداخت واقعی متصل نیست. برای انتقال محصولات به سایت عمومی، اتصال پایگاه داده جداگانه لازم است.</div>
+<section class="panel"><div class="note"><strong>مدیریت با GitHub (بدون Supabase):</strong> این پنل تغییرات را فعلاً در همین مرورگر نگه می‌دارد. برای انتشار روی سایت، از «خروجی پشتیبان JSON» استفاده کنید، سپس فایل <code>products.json</code> در GitHub را باز کنید و محتوا را جایگزین و Commit کنید. هیچ رمز یا توکن GitHub را داخل این صفحه وارد نکنید. این نسخه فروش یا پرداخت آنلاین ندارد.</div>
 <h1 id="formTitle">ثبت محصول کاتالوگ</h1>
 <form id="productForm"><input type="hidden" id="pid">
 <div class="grid">
@@ -21,7 +21,7 @@
 <div><label>تصویر محصول (انتخاب فایل)</label><input id="photo" type="file" accept="image/*"></div>
 </div><div style="margin-top:12px"><label>توضیحات</label><textarea id="desc"></textarea></div>
 <div class="actions"><button type="submit">ذخیره محصول</button><button type="button" class="secondary" id="cancel">فرم جدید</button></div></form></section>
-<section class="panel"><h2>محصولات ثبت‌شده</h2><div id="list" class="products"></div><div class="actions"><button class="secondary" id="export">خروجی پشتیبان JSON</button><button class="secondary" id="importBtn">واردکردن پشتیبان</button><input id="backupFile" type="file" accept=".json,application/json" hidden></div></section>
+<section class="panel"><h2>محصولات ثبت‌شده</h2><div id="list" class="products"></div><div class="actions"><button class="secondary" id="export">خروجی پشتیبان JSON</button><button class="secondary" id="importBtn">واردکردن پشتیبان</button><a href="https://github.com/alik12mv2-alt/zarrin-arman2/edit/main/zarrin-arman/products.json" target="_blank" rel="noopener" class="secondary" style="display:inline-flex;align-items:center;text-decoration:none;padding:10px 14px;border-radius:10px;background:#eee8dc;color:var(--ink)">بازکردن فایل کاتالوگ در GitHub</a><input id="backupFile" type="file" accept=".json,application/json" hidden></div></section>
 </main>
 <script>
 const $=id=>document.getElementById(id);const KEY="zarrin_arman_local_catalog";let items=[];try{items=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{items=[]}
