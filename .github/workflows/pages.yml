@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate product catalog
+        run: python3 .github/scripts/validate_catalog.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
