@@ -1,0 +1,59 @@
+[
+  {
+    "name": "گردنبند زنجیری ظریف",
+    "category": "گردنبند",
+    "price": 12800000,
+    "weight": "۲٫۱ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "♢",
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=700&q=80",
+    "featured": true
+  },
+  {
+    "name": "دستبند طلای کلاسیک",
+    "category": "دستبند",
+    "price": 16400000,
+    "weight": "۲٫۸ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "⌁",
+    "image": "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80",
+    "featured": true
+  },
+  {
+    "name": "انگشتر نگین‌دار",
+    "category": "انگشتر",
+    "price": 18900000,
+    "weight": "۳ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "◉",
+    "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=700&q=80",
+    "featured": true
+  },
+  {
+    "name": "گوشواره مینیمال",
+    "category": "گوشواره",
+    "price": 9700000,
+    "weight": "۱٫۴ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "✧",
+    "image": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    "name": "پلاک طرح قلب",
+    "category": "پلاک",
+    "price": 11200000,
+    "weight": "۱٫۷ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "♡",
+    "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    "name": "دستبند زنجیری",
+    "category": "دستبند",
+    "price": 14300000,
+    "weight": "۲٫۵ گرم",
+    "karat": "۱۸ عیار",
+    "symbol": "⌁",
+    "image": "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=700&q=80"
+  }
+]
